@@ -1,1 +1,27 @@
-<p>members works!</p>
+<h2>Members</h2>
+
+<form (ngSubmit)="addMember()" #memberForm="ngForm">
+  <input type="text" [(ngModel)]="newMember.name" name="name" placeholder="Name" required />
+  <input type="email" [(ngModel)]="newMember.email" name="email" placeholder="Email" required />
+  <input type="text" [(ngModel)]="newMember.phoneNumber" name="phoneNumber" placeholder="Phone" required />
+  <button type="submit" [disabled]="memberForm.invalid">Add</button>
+</form>
+
+<hr />
+@if (members.length > 0) {
+  <table border="1">
+  <tr>
+    <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
+  </tr>
+   @for (m of members; track m.id) {
+  <tr>
+    <td>{{ m.id }}</td>
+    <td>{{ m.name }}</td>
+    <td>{{ m.email }}</td>
+    <td>{{ m.phoneNumber }}</td>
+  </tr>
+}
+</table>
+} @else {
+  <p>No members available.</p>
+}

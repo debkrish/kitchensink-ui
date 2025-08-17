@@ -1,35 +1,43 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private tokenKey = 'auth_token';
+  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+
+  loggedIn$ = this.loggedIn.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string) {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { username, password })
-      .pipe(
-        tap(res => {
-          localStorage.setItem('jwtToken', res.token);
-        })
-      );
+  login(username: string, password: string, returnUrl: string = '/members') {
+    return this.http.post<{ token: string }>(`${environment.apiUrl}/api/auth/login`, { username, password }).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        this.loggedIn.next(true);
+        this.router.navigateByUrl(returnUrl);
+      })
+    );
   }
 
   logout() {
-    localStorage.removeItem('jwtToken');
+    localStorage.removeItem(this.tokenKey);
+    this.loggedIn.next(false);
     this.router.navigate(['/login']);
   }
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('jwtToken');
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('jwtToken');
+  isAuthenticated(): boolean {
+    return this.hasToken();
+  }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem(this.tokenKey);
   }
 }
