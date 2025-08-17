@@ -16,6 +16,29 @@ $my-theme: mat.m2-define-light-theme((
   density: 0,
 ));
 
+/* Error */
+.mat-mdc-snack-bar-container.snackbar-error {
+  --mat-snack-bar-container-color: #d32f2f;
+  --mat-snack-bar-supporting-text-color: #fff;
+}
+
+/* Success */
+.mat-mdc-snack-bar-container.snackbar-success {
+  --mat-snack-bar-container-color: #2e7d32;
+  --mat-snack-bar-supporting-text-color: #fff;
+}
+
+/* Info */
+.mat-mdc-snack-bar-container.snackbar-info {
+  --mat-snack-bar-container-color: #1565c0;
+  --mat-snack-bar-supporting-text-color: #fff;
+}
+
+.mat-mdc-snack-bar-container.snackbar-error .mat-mdc-button.mat-mdc-snack-bar-action,
+.mat-mdc-snack-bar-container.snackbar-success .mat-mdc-button.mat-mdc-snack-bar-action,
+.mat-mdc-snack-bar-container.snackbar-info .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: #ffffff !important;
+}
 // 3. Apply the theme to all Angular Material components
 @include mat.all-component-themes($my-theme);
 @include mat.all-component-typographies($my-theme);

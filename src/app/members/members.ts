@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
+import { NotificationService } from '../shared/services/notification.service';
 
 interface Member {
   id?: number;
@@ -36,7 +37,7 @@ export class Members implements OnInit {
   members: Member[] = [];
   newMember: Member = { name: '', email: '', phoneNumber: '' };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private notify: NotificationService) {}
 
   ngOnInit(): void {
     this.loadMembers();
@@ -55,8 +56,19 @@ export class Members implements OnInit {
         // Refresh the whole list from backend instead of just pushing
         this.loadMembers();
         this.newMember = { name: '', email: '', phoneNumber: '' };
+        this.notify.success('Member registered successfully');
       },
-      error: (err) => console.error('Failed to add member', err)
+      error: (err: HttpErrorResponse) => {
+        if (err.error?.details) {
+  Object.entries(err.error.details).forEach(([field, msg]) => {
+    this.notify.error(`${field}: ${msg}`);
+  });
+}
+
+else{
+   this.notify.error(err.error?.message || 'Something went wrong');
+}
+      }
     });
   }
 }
