@@ -9,7 +9,7 @@ import { AuthService } from '../../../auth/auth.service';
   standalone: true,
   imports: [MatToolbarModule, MatButtonModule],
   templateUrl: './navbar.html',
-  styleUrls: ['./navbar.css']
+  styleUrls: ['./navbar.scss']
 })
 export class Navbar {
   constructor(private auth: AuthService) {}

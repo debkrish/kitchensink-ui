@@ -8,7 +8,7 @@ import { Navbar } from './shared/components/navbar/navbar';
   selector: 'app-root',
   imports: [RouterOutlet, Toast, Navbar],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
   protected readonly title = signal('kitchensink-ui');

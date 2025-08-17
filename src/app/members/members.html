@@ -1,27 +1,64 @@
-<h2>Members</h2>
+<mat-card class="member-card">
+  <mat-card-header>
+    <mat-card-title>Members</mat-card-title>
+  </mat-card-header>
 
-<form (ngSubmit)="addMember()" #memberForm="ngForm">
-  <input type="text" [(ngModel)]="newMember.name" name="name" placeholder="Name" required />
-  <input type="email" [(ngModel)]="newMember.email" name="email" placeholder="Email" required />
-  <input type="text" [(ngModel)]="newMember.phoneNumber" name="phoneNumber" placeholder="Phone" required />
-  <button type="submit" [disabled]="memberForm.invalid">Add</button>
-</form>
+  <mat-card-content>
+    <form (ngSubmit)="addMember()" #memberForm="ngForm" class="member-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" [(ngModel)]="newMember.name" name="name" required />
+      </mat-form-field>
 
-<hr />
-@if (members.length > 0) {
-  <table border="1">
-  <tr>
-    <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
-  </tr>
-   @for (m of members; track m.id) {
-  <tr>
-    <td>{{ m.id }}</td>
-    <td>{{ m.name }}</td>
-    <td>{{ m.email }}</td>
-    <td>{{ m.phoneNumber }}</td>
-  </tr>
-}
-</table>
-} @else {
-  <p>No members available.</p>
-}
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="newMember.email" name="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput type="text" [(ngModel)]="newMember.phoneNumber" name="phoneNumber" required />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="memberForm.invalid">
+        Add Member
+      </button>
+    </form>
+
+    <mat-divider></mat-divider>
+
+    @if (members.length > 0) {
+      <table mat-table [dataSource]="members" class="mat-elevation-z8 member-table">
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let m"> {{ m.id }} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let m"> {{ m.name }} </td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let m"> {{ m.email }} </td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef> Phone </th>
+          <td mat-cell *matCellDef="let m"> {{ m.phoneNumber }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['id','name','email','phoneNumber']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['id','name','email','phoneNumber'];"></tr>
+      </table>
+    } @else {
+      <p>No members available.</p>
+    }
+  </mat-card-content>
+</mat-card>

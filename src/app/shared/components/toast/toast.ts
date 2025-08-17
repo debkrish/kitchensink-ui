@@ -6,7 +6,7 @@ import { ToastService } from './toast.service';
   selector: 'app-toast',
   imports: [CommonModule],
   templateUrl: './toast.html',
-  styleUrl: './toast.css'
+  styleUrl: './toast.scss'
 })
 export class Toast {
   toastService = inject(ToastService);
