@@ -34,7 +34,14 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.hasToken();
+  const token = localStorage.getItem(this.tokenKey);
+  if (!token) return false;
+
+  // Decode payload
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const expiry = payload.exp * 1000; // exp is in seconds
+  return Date.now() < expiry;
+
   }
 
   private hasToken(): boolean {
