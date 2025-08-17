@@ -38,7 +38,14 @@ export class Login {
 
   onLogin() {
     this.auth.login(this.username, this.password, this.returnUrl).subscribe({
-      error: () => this.error = 'Invalid username or password'
+      error: (err) => {
+        if (err.error && err.error.error) {
+        this.error = err.error.error;
+      } else {
+        // fallback in case backend didn’t send structured error
+        this.error = 'Login failed. Please try again.';
+      }
+      }
     });
   }
 }
