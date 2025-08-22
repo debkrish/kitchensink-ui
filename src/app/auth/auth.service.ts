@@ -23,6 +23,20 @@ export class AuthService {
     );
   }
 
+  register(username: string, password: string, roles: string[] = ['USER'], returnUrl: string = '/login') {
+  return this.http.post<any>(`${environment.apiUrl}/api/auth/register`, { username, password, roles }).pipe(
+   tap(
+      response => {
+        if (response.message) {
+          // success -> redirect with query param
+          this.router.navigate([returnUrl], {
+            queryParams: { registered: 'true', message: response.message }
+          });
+        }
+      })
+  );
+}
+
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.loggedIn.next(false);
@@ -47,4 +61,22 @@ export class AuthService {
   private hasToken(): boolean {
     return !!localStorage.getItem(this.tokenKey);
   }
+
+  getRoles(): string[] {
+  const token = localStorage.getItem(this.tokenKey);
+  if (!token) return [];
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const roles: string[] = payload.roles || [];
+    // Strip "ROLE_" prefix if present
+    return roles.map(r => r.startsWith("ROLE_") ? r.substring(5) : r);
+  } catch {
+    return [];
+  }
+}
+
+hasRole(role: string): boolean {
+  return this.getRoles().includes(role);
+}
 }

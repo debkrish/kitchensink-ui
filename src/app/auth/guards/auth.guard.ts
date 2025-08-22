@@ -7,10 +7,17 @@ export class AuthGuard {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate: CanActivateFn = (route, state) => {
-    if (this.auth.isAuthenticated()) {
-      return true;
-    }
+ if (!this.auth.isAuthenticated()) {
     this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;
-  };
+  }
+
+  const expectedRole = route.data?.['role']; // optional per route
+  if (expectedRole && !this.auth.hasRole(expectedRole)) {
+    this.router.navigate(['/unauthorized']); // redirect if role mismatch
+    return false;
+  }
+
+  return true;
+}
 }
